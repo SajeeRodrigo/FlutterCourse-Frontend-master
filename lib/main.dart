@@ -98,6 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Image.asset("images/logo.png"),
       ),
+      bottomNavigationBar: BottomNavigationBar(items: [
+        BottomNavigationBarItem(icon: Icons.)
+      ]),
       body: const OffersPage(),
     );
   }
