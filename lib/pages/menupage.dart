@@ -1,32 +1,72 @@
 // import 'package:flutter/cupertino.dart';
+import 'package:coffee_masters/datamanager.dart';
 import 'package:flutter/material.dart';
 
 import '../datamodel.dart';
 
 class MenuPage extends StatelessWidget {
-  const MenuPage({Key? key}) : super(key: key);
+  final DataManager dataManager;
+  const MenuPage({Key? key, required this.dataManager}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var p = Product(id: 1, name: "Dummy Product", price: 1.25, image: "");
-    var q = Product(
-        id: 2, name: "Dummy Product Much larger", price: 1.25, image: "");
-    var r = Product(id: 3, name: "Dummy Product 3", price: 1.25, image: "");
-    return ListView(
-      children: [
-        ProductItem(
-          product: p,
-          onAdd: () {},
-        ),
-        ProductItem(
-          product: q,
-          onAdd: () {},
-        ),
-        ProductItem(
-          product: r,
-          onAdd: () {},
-        ),
-      ],
+    // var p = Product(id: 1, name: "Dummy Product", price: 1.25, image: "");
+    // var q = Product(
+    //     id: 2, name: "Dummy Product Much larger", price: 1.25, image: "");
+    // var r = Product(id: 3, name: "Dummy Product 3", price: 1.25, image: "");
+    return FutureBuilder(
+      future: dataManager.getMenu(),
+      builder: ((context, snapshot) {
+        if (snapshot.hasData) {
+          //The future has finished, data is ready
+          var categories = snapshot.data! as List<Category>;
+          return ListView.builder(
+            itemCount: categories.length,
+            itemBuilder: ((context, index) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(categories[index].name),
+                  ),
+                  ListView.builder(
+                      itemCount: categories[index].products.length,
+                      itemBuilder: (context, productIndex) {
+                        return ProductItem(
+                            product: categories[index].products[productIndex],
+                            onAdd: () {}
+                            );
+                      },)
+                ],
+              );
+            }),
+          );
+        } else {
+          if (snapshot.hasError) {
+            //data is not there because of an error
+            return const Text("There was an error!");
+          } else {
+            //Data is in progress (the future didn't finish)
+            return const CircularProgressIndicator();
+          }
+        }
+      }),
+
+      // ListView(
+      //   children: [
+      //     ProductItem(
+      //       product: p,
+      //       onAdd: () {},
+      //     ),
+      //     ProductItem(
+      //       product: q,
+      //       onAdd: () {},
+      //     ),
+      //     ProductItem(
+      //       product: r,
+      //       onAdd: () {},
+      //     ),
+      //   ],
     );
   }
 }

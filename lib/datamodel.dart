@@ -4,8 +4,8 @@ class Product {
   String name;
   double price;
   String image;
-  String get imageUrl => 
-          "https://firtman.github.io/coffemasters/api/imsges/$image";
+  String get imageUrl =>
+      "https://firtman.github.io/coffemasters/api/imsges/$image";
 
 //Constructor
   Product(
@@ -13,6 +13,15 @@ class Product {
       required this.name,
       required this.price,
       required this.image});
+
+  //Factory Constructor
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+        id: json['id'] as int,
+        name: json['name'] as String,
+        price: json['price'] as double,
+        image: json['image'] as String);
+  }
 }
 
 class Category {
@@ -20,6 +29,12 @@ class Category {
   List<Product> products;
 
   Category({required this.name, required this.products});
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    var productJson = json['products'] as Iterable<dynamic>;
+    var products = productJson.map((p) => Product.fromJson(p)).toList();
+    return Category(name: json['name'] as String, products: products);
+  }
 }
 
 class ItemInCart {
